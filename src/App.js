@@ -1,23 +1,33 @@
 import React from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import AdminPanel from './components/AdminPanel';
 import EsevaPage from './pages/EsevaPage';
 import ComputerPage from './pages/ComputerPage';
 import FoodPage from './pages/FoodPage';
 import AdminLoginPage from './components/AdminLogin';
-
-const isLoggedIn = localStorage.getItem('admin_logged_in') === 'true';
+import Topbar from './components/Topbar';
+import Navbar from './components/Navbar';
+import HeroSlider from './components/HeroSlider';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('admin_logged_in') === 'true');
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setIsLoggedIn(localStorage.getItem('admin_logged_in') === 'true');
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   return (
     <Router>
-      <nav className="p-4 bg-gray-100 flex gap-4">
-        <Link to="/">Home</Link>
-        <Link to="/eseva">E-Sevai</Link>
-        <Link to="/computer">Computer</Link>
-        <Link to="/food">Food</Link>
-        <Link to="/admin-login">Admin Login</Link>
-      </nav>
+      <Topbar />
+      <Navbar />
+      <HeroSlider />
 
       <Routes>
         <Route path="/" element={<div className="p-4 text-lg">Welcome to the Services Website</div>} />
@@ -25,10 +35,7 @@ function App() {
         <Route path="/computer" element={<ComputerPage />} />
         <Route path="/food" element={<FoodPage />} />
         <Route path="/admin-login" element={<AdminLoginPage />} />
-        <Route
-          path="/admin"
-          element={isLoggedIn ? <AdminPanel /> : <Navigate to="/admin-login" />}
-        />
+        <Route path="/admin" element={isLoggedIn ? <AdminPanel /> : <Navigate to="/admin-login" />} />
       </Routes>
     </Router>
   );

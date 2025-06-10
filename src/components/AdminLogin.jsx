@@ -6,7 +6,8 @@ const AdminLoginPage = () => {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    if (password === 'admin123') {
+    const trimmedPassword = password.trim(); // Trim spaces
+    if (trimmedPassword === 'admin123') {
       localStorage.setItem('admin_logged_in', 'true');
       navigate('/admin');
     } else {
